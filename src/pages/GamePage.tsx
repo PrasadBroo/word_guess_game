@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import GuessMsg from "../components/GuessMsg";
 import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
+import useWindowUnloadEffect from "../customHooks/useWindowReload";
 
 interface word {
   word: string | null;
@@ -36,7 +37,6 @@ export default function GamePage() {
   };
 
   useEffect(() => {
-
     socket.on("start_game", handelStartGame);
     socket.on("user_guess", handelUserGuess);
 
@@ -44,7 +44,6 @@ export default function GamePage() {
       socket.off("start_game", handelStartGame);
       socket.off("user_guess", handelUserGuess);
     };
-
   }, []);
 
   const handelGuessSubmit = (e: React.SyntheticEvent) => {
@@ -54,7 +53,7 @@ export default function GamePage() {
       guess: userGuess,
     });
   };
-  
+
   return (
     <div className="game p-4">
       <div className="wrap w-4/5 mx-auto">

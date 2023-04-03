@@ -27,7 +27,6 @@ function App() {
   const { currentUser } = useContext(UserContext);
 
   const disconnectSocket = () => {
-    localStorage.setItem("ggdfgdf", JSON.stringify(currentUser));
     socket.emit("disconnected", {
       room: "room_1",
       user: currentUser?.name || "not working",
@@ -36,6 +35,11 @@ function App() {
   };
 
   useWindowUnloadEffect(disconnectSocket, [currentUser]);
+
+  useEffect(() => {
+    document.title = currentUser?.name || "No name";
+    console.log("socket id", socket.id);
+  }, [currentUser?.name]);
 
   useEffect(() => {
     socket.connect();

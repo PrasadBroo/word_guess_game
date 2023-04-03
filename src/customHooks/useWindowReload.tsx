@@ -2,7 +2,6 @@ import { useEffect } from "react";
 type HandlerType = () => void;
 
 const useWindowUnloadEffect = (handler: HandlerType, dependencies: any[]) => {
-  console.log(dependencies);
   useEffect(() => {
     window.addEventListener("beforeunload", handler);
 

@@ -8,6 +8,12 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { setCurrentUser } = useContext(UserContext);
 
+  useEffect(() => {
+    () => {
+      socket.off("join_room");
+    };
+  }, []);
+
   const handelFormSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
