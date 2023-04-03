@@ -17,14 +17,14 @@ export default function HomePage() {
   const handelFormSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    setCurrentUser({ name: username });
+    setCurrentUser({ name: username, id: socket.id });
 
     socket.emit("join_room", { data: { username } });
 
     navigate("/loading");
   };
   return (
-    <div className="user-detailsw  h-screen flex items-center justify-center">
+    <div className="user-detailsw dark:text-white dark:bg-secondary  font-Bungee  h-screen flex items-center justify-center">
       <form className="form" onSubmit={handelFormSubmit}>
         <div className="username w-64">
           <input
@@ -34,7 +34,7 @@ export default function HomePage() {
             required
             autoFocus
             minLength={3}
-            className="border bolder text-slate-400 w-full shadow-md border-slate-400  py-3 px-5"
+            className="border bolder dark:bg-light-grey text-slate-400 w-full shadow-md border-slate-400  py-3 px-5"
             placeholder="Your name..."
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -42,7 +42,7 @@ export default function HomePage() {
         <div className="btn mt-3 text-center">
           <button
             type="submit"
-            className="bg-slate-400 py-2 rounded px-4 text-white disabled:cursor-not-allowed"
+            className="bg-slate-400 py-2 dark:bg-btn-blue rounded px-4 text-white disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!username}
           >
             Submit

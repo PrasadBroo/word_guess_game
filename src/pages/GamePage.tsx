@@ -4,19 +4,14 @@ import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
 import useWindowUnloadEffect from "../customHooks/useWindowReload";
 
-interface word {
-  word: string | null;
-  defination: string | null;
-}
+type Defination = string | null;
 interface guess {
-  username: string;
+  name: string;
   guess: string;
 }
 interface StartGameType {
-  data: {
-    word: string;
-    defination: string;
-  };
+  defination: string;
+  secret_word_length: number;
 }
 
 interface UserGuessType {
@@ -25,12 +20,14 @@ interface UserGuessType {
 
 export default function GamePage() {
   const { currentUser } = useContext(UserContext);
-  const [word, setWord] = useState<word>({ word: "ABCD", defination: null });
+  const [defination, setDefination] = useState<Defination>(null);
+  const [secretWordLength, setSecretWordLength] = useState<number>(0);
   const [userGuess, setUserGuess] = useState<string | null>(null);
   const [guess, setGuess] = useState<guess[]>([]);
 
   const handelStartGame = (data: StartGameType) => {
-    setWord({ word: data.data.word, defination: data.data.defination });
+    setDefination(data.defination);
+    setSecretWordLength(data.secret_word_length);
   };
   const handelUserGuess = (data: UserGuessType) => {
     setGuess((prevGuesses) => [...prevGuesses, data.data]);
@@ -47,58 +44,60 @@ export default function GamePage() {
   }, []);
 
   const handelGuessSubmit = (e: React.SyntheticEvent) => {
+    setUserGuess("");
     socket.emit("user_guess", {
       user: currentUser?.name,
-      room: "room_1",
+      room: currentUser?.room,
       guess: userGuess,
     });
   };
 
   return (
-    <div className="game p-4">
+    <div className="game h-screen mx-auto max-w-xl p-4 dark:bg-secondary dark:text-primary">
       <div className="wrap w-4/5 mx-auto">
-        <div className="header  border  shadow-md  ">
+        <div className="header    shadow-md  ">
           <div className="defination text-center italic">
-            <p>{word.defination}</p>
+            <p className=" dark:bg-primary tracking-wide  rounded-md text-white dark:text-black">
+              {defination}
+            </p>
           </div>
-          <div className="wrap-word flex items-end  pb-2 h-14  justify-items-center justify-around">
-            {word.word &&
-              word.word
-                .split("")
-                .map((w, i) => (
-                  <div key={i} className="h-1 w-10  bg-black"></div>
-                ))}
+          <div className="wrap-word flex items-end dark:bg-light-grey  pb-2 h-14  justify-items-center justify-around">
+            {Array(secretWordLength)
+              .fill("X")
+              .map((w, i) => (
+                <div
+                  key={i}
+                  className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
+                >
+                  {w}
+                </div>
+              ))}
           </div>
         </div>
-        <div className="guesses   p-4 mt-4 h-[300px] border overflow-y-scroll  shadow-md">
+        <main className="guesses  dark:bg-bg-secondary scroll-smooth  h-[500px] overflow-y-scroll  shadow-md">
           {guess.map((g, i) => (
-            <GuessMsg
-              guessMsg={g.guess}
-              user={{ username: g.username }}
-              key={i}
-            />
+            <GuessMsg guessMsg={g.guess} user={{ name: g.name }} key={i} />
           ))}
-        </div>
-        <div className="send-guess mt-4  flex items-center justify-between">
-          <div className="msg ">
-            <input
-              type="text"
-              name="user_guess"
-              id="user_guess"
-              required
-              onChange={(e) => setUserGuess(e.target.value)}
-              placeholder="Your guess . . ."
-              className="px-4 py-2 border shadow-md"
-            />
-          </div>
-          <div className="submit-btn">
-            <button
-              className="btn px-4 py-2 border shadow-md"
-              onClick={handelGuessSubmit}
-            >
-              Send
-            </button>
-          </div>
+        </main>
+        <div className="send-guess  w-full ">
+          <input
+            type="text"
+            name="user_guess"
+            id="user_guess"
+            required
+            value={userGuess || ""}
+            onChange={(e) => setUserGuess(e.target.value)}
+            placeholder="Your guess . . ."
+            className="px-4 outline-none py-3  w-4/5 shadow-md dark:bg-light-grey"
+          />
+
+          <button
+            className="btn w-1/5 border-0 dark:bg-btn-blue px-4 py-3 disabled:opacity-50  shadow-md"
+            onClick={handelGuessSubmit}
+            disabled={!userGuess}
+          >
+            <i className="fa-regular fa-paper-plane text-xl text-black dark:text-white"></i>
+          </button>
         </div>
       </div>
     </div>

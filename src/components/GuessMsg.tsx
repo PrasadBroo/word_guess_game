@@ -6,24 +6,27 @@ type Props = {
   children?: React.ReactNode;
   guessMsg: string;
   user: {
-    [username: string]: string;
+    name: string;
   };
 };
 
 const GuessMsg: React.FC<Props> = ({ guessMsg, user }) => {
   const { currentUser } = useContext(UserContext);
+  console.log(currentUser?.name, user.name);
   const msg_class = classNames(
-    "guess p-2 bg-blue-400 text-center mb-1 text-white  w-min rounded-xl  flex items-center",
+    "guess font-Bungee p-2 text-center mb-1 flex items-center",
     {
-      "flex-row-reverse ": currentUser?.name === user.username,
+      "flex-row-reverse ": currentUser?.name === user.name,
     }
   );
   return (
     <div className={msg_class}>
-      <div className="msg">
-        <span className="username inline-block">{user.username}</span>
-        <span className="user-guess mx-2 inline-block">{guessMsg}</span>
-      </div>
+      <span className="username h-10 w-10 flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
+        {user.name[0].toLocaleUpperCase()}
+      </span>
+      <p className="user-guess mx-2 dark:bg-primary py-2 dark:text-secondary px-3  rounded-xl">
+        {guessMsg}
+      </p>
     </div>
   );
 };

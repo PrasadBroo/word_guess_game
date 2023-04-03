@@ -1,7 +1,9 @@
 import React, { createContext, useState } from "react";
 
 interface User {
-  name: string;
+  name: string | undefined;
+  room?: string;
+  id?: string;
 }
 
 interface UserContextType {
