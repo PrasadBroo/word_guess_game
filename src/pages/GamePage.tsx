@@ -98,11 +98,11 @@ export default function GamePage() {
   };
 
   return (
-    <div className="game transition font-Bungee h-screen mx-auto max-w-xl  p-4 dark:bg-secondary dark:text-primary">
+    <div className="game transition text-black font-Bungee h-screen mx-auto max-w-xl  p-4 dark:bg-secondary dark:text-primary">
       <div className="wrap w-4/5 mx-auto">
         <div className="header    shadow-md  ">
           <div className="defination text-center italic">
-            <p className=" dark:bg-primary tracking-wide  rounded-md text-white dark:text-black">
+            <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
               {defination}
             </p>
           </div>

@@ -15,7 +15,7 @@ export default function HomePage() {
     socket.on("players_count", (data: number) => {
       setOnlinePlayersCount(data);
     });
-    
+
     () => {
       socket.off("join_room");
     };
@@ -33,7 +33,7 @@ export default function HomePage() {
   return (
     <div className="user-detailsw transition dark:text-white dark:bg-secondary  font-Bungee  h-screen flex items-center justify-center">
       <div className="online-users flex items-center dark:bg-primary dark:text-black justify-center fixed left-8 top-8 bg-secondary text-white py-2 px-4 rounded">
-        <div className="circle h-3 w-3 animate-pulse rounded-full bg-btn-blue mr-4"></div>
+        <div className="circle h-3 w-3 animate-pulse bg-white  rounded-full dark:bg-green-400 mr-4"></div>
         <p>{onlinePlayersCount}</p>
       </div>
       <form className="form" onSubmit={handelFormSubmit}>
@@ -56,7 +56,7 @@ export default function HomePage() {
             className="bg-slate-400 transition py-2 dark:bg-btn-blue rounded px-4 text-white disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!username}
           >
-            Submit
+            Join
           </button>
         </div>
       </form>

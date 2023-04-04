@@ -39,7 +39,9 @@ export default function LoadingPage() {
 
   return (
     <div className="h-screen transition dark:text-white dark:bg-secondary text-2xl w-full flex items-center justify-center">
-      {!joining ? "Wating for user . . . " : joining}
+      Wating for user <span className="mx-2 animate-bounce ">.</span>{" "}
+      <span className="mr-2 animate-bounce  ">.</span>{" "}
+      <span className=" animate-bounce  ">.</span>
     </div>
   );
 }
