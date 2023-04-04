@@ -38,7 +38,7 @@ export default function LoadingPage() {
   }, [foundPlayer]);
 
   return (
-    <div className="h-screen dark:text-white dark:bg-secondary text-2xl w-full flex items-center justify-center">
+    <div className="h-screen transition dark:text-white dark:bg-secondary text-2xl w-full flex items-center justify-center">
       {!joining ? "Wating for user . . . " : joining}
     </div>
   );

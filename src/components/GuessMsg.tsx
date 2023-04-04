@@ -1,32 +1,36 @@
 import classNames from "classnames";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
 
 type Props = {
   children?: React.ReactNode;
-  guessMsg: string;
   user: {
     name: string;
+    id: string;
+    correct: boolean;
+    guess: string;
+    typing: boolean;
   };
 };
 
-const GuessMsg: React.FC<Props> = ({ guessMsg, user }) => {
+const GuessMsg: React.FC<Props> = ({ user }) => {
   const { currentUser } = useContext(UserContext);
-  console.log(currentUser?.name, user.name);
-  const msg_class = classNames(
-    "guess font-Bungee p-2 text-center mb-1 flex items-center",
+  const msg_class = classNames("guess p-2 text-center mb-1 flex items-center", {
+    "flex-row-reverse ": currentUser?.id === user.id,
+  });
+  const user_msg_classes = classNames(
+    "user-guess mx-2  py-2  px-3  rounded-xl",
     {
-      "flex-row-reverse ": currentUser?.name === user.name,
+      "bg-green-400 text-white": user.correct,
+      "dark:bg-primary dark:text-secondary": !user.correct,
     }
   );
   return (
     <div className={msg_class}>
-      <span className="username h-10 w-10 flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
+      <span className="username h-10 w-10  flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
         {user.name[0].toLocaleUpperCase()}
       </span>
-      <p className="user-guess mx-2 dark:bg-primary py-2 dark:text-secondary px-3  rounded-xl">
-        {guessMsg}
-      </p>
+      <p className={user_msg_classes}>{user.guess}</p>
     </div>
   );
 };
