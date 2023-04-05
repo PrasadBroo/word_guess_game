@@ -2,12 +2,18 @@ import classNames from "classnames";
 import { useContext } from "react";
 import { UserContext } from "../contexts/userContext";
 import { PulseLoader } from "react-spinners";
+import { motion } from "framer-motion";
 
 type Props = {
   children?: React.ReactNode;
   user: {
     name: string;
   };
+};
+
+const variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
 };
 
 export default function UserTyping({ user }: Props) {
@@ -19,13 +25,18 @@ export default function UserTyping({ user }: Props) {
     }
   );
   return (
-    <div className={msg_class}>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={variants}
+      className={msg_class}
+    >
       <span className="username h-10 w-10 flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
-        {user.name[0].toLocaleUpperCase()}
+        {user?.name && user.name[0].toLocaleUpperCase()}
       </span>
       <p className="user-guess mx-2 dark:bg-primary py-2 dark:text-secondary px-3  rounded-xl">
         <PulseLoader color="#38388f" size={10} speedMultiplier={0.5} loading />
       </p>
-    </div>
+    </motion.div>
   );
 }

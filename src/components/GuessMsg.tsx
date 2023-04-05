@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
+import { motion } from "framer-motion";
 
 type Props = {
   children?: React.ReactNode;
@@ -11,6 +12,11 @@ type Props = {
     guess: string;
     typing: boolean;
   };
+};
+
+const variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
 };
 
 const GuessMsg: React.FC<Props> = ({ user }) => {
@@ -26,12 +32,17 @@ const GuessMsg: React.FC<Props> = ({ user }) => {
     }
   );
   return (
-    <div className={msg_class}>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={variants}
+      className={msg_class}
+    >
       <span className="username h-10 w-10  flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
         {user.name[0].toLocaleUpperCase()}
       </span>
       <p className={user_msg_classes}>{user.guess}</p>
-    </div>
+    </motion.div>
   );
 };
 

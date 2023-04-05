@@ -1,34 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { socket } from "../services/socket";
-import { UserContext } from "../contexts/userContext";
+import { GameContext } from "../contexts/gameContext";
 
 export default function LoadingPage() {
   const navigate = useNavigate();
-  const { setCurrentUser, currentUser } = useContext(UserContext);
-  const [foundPlayer, setFoundPlayer] = useState<boolean>(false);
-
-
-  const handleFoundPlayer = (data: {
-    name: string;
-    id: string;
-    room: string;
-  }) => {
-    setFoundPlayer(true);
-    setCurrentUser({
-      room: data.room,
-      name: currentUser?.name,
-      id: currentUser?.id,
-    });
-    document.title = `You vs ${data.name}`;
-  };
-  useEffect(() => {
-    socket.on("found-player", handleFoundPlayer);
-    () => {
-      socket.off("found-player", handleFoundPlayer);
-    };
-  }, []);
+  const { foundPlayer } = useContext(GameContext);
 
   useEffect(() => {
     if (foundPlayer) {
@@ -37,7 +13,7 @@ export default function LoadingPage() {
   }, [foundPlayer]);
 
   return (
-    <div className="h-screen transition dark:text-white dark:bg-secondary text-2xl w-full flex items-center justify-center">
+    <div className=" transition dark:text-white dark:bg-secondary text-2xl w-full flex items-center justify-center">
       Wating for user <span className="mx-2 animate-bounce ">.</span>{" "}
       <span className="mr-2 animate-bounce  ">.</span>{" "}
       <span className=" animate-bounce  ">.</span>

@@ -4,16 +4,25 @@ import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
 import { GameContext } from "../contexts/gameContext";
 
+interface User {
+  name: string | undefined;
+  room?: string;
+  id?: string;
+}
+
 export default function HomePage() {
   const [username, setUsername] = useState<string>("");
   const navigate = useNavigate();
   const { setCurrentUser } = useContext(UserContext);
-  const { onlinePlayersCount } = useContext(GameContext);
 
   const handelFormSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    setCurrentUser({ name: username, id: socket.id });
+    setCurrentUser((prevState: User) => ({
+      ...prevState,
+      name: username,
+      id: socket.id,
+    }));
 
     socket.emit("join_room", { data: { username } });
 
@@ -21,10 +30,6 @@ export default function HomePage() {
   };
   return (
     <>
-      <div className="online-users flex items-center dark:bg-primary dark:text-black justify-center fixed left-8 top-8 bg-secondary text-white py-2 px-4 rounded">
-        <div className="circle h-3 w-3 animate-pulse bg-white  rounded-full dark:bg-green-400 mr-4"></div>
-        <p>{onlinePlayersCount}</p>
-      </div>
       <form className="form" onSubmit={handelFormSubmit}>
         <div className="username w-64">
           <input
@@ -34,6 +39,7 @@ export default function HomePage() {
             required
             autoFocus
             minLength={3}
+            maxLength={15}
             className="border bolder dark:bg-light-grey text-slate-400 w-full shadow-md border-slate-400  py-3 px-5"
             placeholder="Your name..."
             onChange={(e) => setUsername(e.target.value)}

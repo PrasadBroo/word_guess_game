@@ -9,6 +9,7 @@ import LoadingPage from "./pages/LoadingPage";
 import { socket } from "./services/socket";
 import HomepageLayout from "./layouts/HomepageLayout";
 import Landingpage from "./pages/Landingpage";
+import CreateRoom from "./pages/CreateRoomPage";
 
 const router = createBrowserRouter([
   {
@@ -20,14 +21,18 @@ const router = createBrowserRouter([
         element: <Landingpage />,
       },
       {
-        path: "/homepage",
+        path: "homepage",
         element: <HomePage />,
       },
+      {
+        path: "createroom",
+        element: <CreateRoom />,
+      },
+      {
+        path: "loading",
+        element: <LoadingPage />,
+      },
     ],
-  },
-  {
-    path: "/loading",
-    element: <LoadingPage />,
   },
   {
     path: "/game",
@@ -52,22 +57,6 @@ function App() {
     document.title = currentUser?.name || "No name";
     console.log("socket id", socket.id);
   }, [currentUser?.name]);
-
-  useEffect(() => {
-    socket.connect();
-
-    socket.on("connect", () => console.log("connected!"));
-
-    socket.on("disconnect", (reason) => {
-      if (reason === "io server disconnect") {
-        // the disconnection was initiated by the server, you need to reconnect manually
-        alert("Player left");
-      }
-    });
-    return () => {
-      socket.connected && socket.disconnect();
-    };
-  }, []);
 
   return <RouterProvider router={router} />;
 }

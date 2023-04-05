@@ -5,87 +5,17 @@ import { socket } from "../services/socket";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import UserTyping from "../components/UserTyping";
-
-type Defination = string | null;
-
-interface GuessType {
-  name: string;
-  id: string;
-  guess: string;
-  typing: boolean;
-  correct: boolean;
-}
-interface StartGameType {
-  defination: string;
-  secret_word_length: number;
-  counter: number;
-}
-
-interface UserGuessType {
-  user: GuessType;
-}
+import { GameContext } from "../contexts/gameContext";
 
 export default function GamePage() {
-  const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
-  const [defination, setDefination] = useState<Defination>(null);
-  const [secretWordLength, setSecretWordLength] = useState<number>(0);
-  const [counter, setCounter] = useState<number>(120);
+  const { gameData, foundPlayer } = useContext(GameContext);
   const [userGuess, setUserGuess] = useState<string | null>(null);
-  const [userGuesses, setUserGuesses] = useState<GuessType[]>([]);
   const [value] = useDebounce(userGuess, 500);
-  const [typing, setTyping] = useState<{ name: string } | null>(null);
-
-  const handelStartGame = (data: StartGameType) => {
-    setDefination(data.defination);
-    setSecretWordLength(data.secret_word_length);
-  };
-
-  const handelUserGuess = (data: UserGuessType) => {
-    setTyping(null);
-    setUserGuesses((prevGuesses) => [...prevGuesses, data.user]);
-  };
-
-  const handelDecrementCounter = (data: number) => {
-    setCounter(data);
-  };
-
-  const handelUserTyping = (data: UserGuessType) => {
-    setTyping({ name: data.user.name });
-    setTimeout(() => {
-      setTyping(null);
-    }, 3000);
-  };
-
-  const handelEndGame = () => {
-    navigate("/");
-  };
 
   useEffect(() => {
     if (value) socket.emit("user_typing", currentUser);
   }, [value]);
-
-  useEffect(() => {
-    socket.on("start_game", handelStartGame);
-    socket.on("user_guess", handelUserGuess);
-    socket.on("decrement_counter", handelDecrementCounter);
-    socket.on("end_game", handelEndGame);
-    socket.on("user_typing", handelUserTyping);
-
-    return () => {
-      socket.off("start_game", handelStartGame);
-      socket.off("user_guess", handelUserGuess);
-      socket.off("decrement_counter", handelDecrementCounter);
-      socket.off("end_game", handelEndGame);
-      socket.off("user_typing", handelUserTyping);
-    };
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   const handelGuessSubmit = (e: React.SyntheticEvent) => {
     setUserGuess("");
@@ -98,19 +28,32 @@ export default function GamePage() {
   };
 
   return (
-    <div className="game transition text-black font-Bungee h-screen mx-auto max-w-xl  p-4 dark:bg-secondary dark:text-primary">
-      <div className="wrap w-4/5 mx-auto">
-        <div className="header    shadow-md  ">
+    <div className="game transition text-black font-Bungee mx-auto max-w-2xl dark:bg-secondary dark:text-primary">
+      <div className="wrap ">
+        <div className="header fixed left-0 right-0 mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
           <div className="defination text-center italic">
             <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
-              {defination}
+              {gameData?.defination}
             </p>
           </div>
-          <div className="counter bg-btn-blue text-white h-12 w-12 my-2 mx-auto flex items-center justify-center font-bold rounded-full">
-            {counter}
+          <div className="my-2">
+            <div className="details flex items-center justify-between">
+              <div className="current-user flex-1 text-center">
+                <div className=" capitalize">You</div>
+              </div>
+              <div className="counter-wrap flex-1 flex items-center justify-center">
+                <div className="counter bg-btn-blue text-white h-12 w-12 flex items-center justify-center   font-bold rounded-full">
+                  {gameData?.counter}
+                </div>
+              </div>
+
+              <div className="opponent text-center flex-1 capitalize">
+                {foundPlayer?.name}
+              </div>
+            </div>
           </div>
-          <div className="wrap-word flex items-end dark:bg-light-grey  pb-2 h-14  justify-items-center justify-around">
-            {Array(secretWordLength)
+          <div className="wrap-word flex items-end dark:bg-light-black  pb-2 h-14  justify-items-center justify-around">
+            {Array(gameData?.secretWordLength)
               .fill("X")
               .map((word, i) => (
                 <div
@@ -122,13 +65,15 @@ export default function GamePage() {
               ))}
           </div>
         </div>
-        <main className="guesses  dark:bg-bg-secondary scroll-smooth min-h-[400px] overflow-y-scroll  shadow-md">
-          {userGuesses.map((g, i) => (
+        <main className="guesses pt-44 pb-12 min-h-[800px]  dark:bg-bg-secondary  scroll-smooth   overflow-y-auto ">
+          {gameData?.userGuesses.map((g, i) => (
             <GuessMsg user={g} key={i} />
           ))}
-          {typing && <UserTyping user={{ name: typing.name }} />}
+          {gameData?.typing && (
+            <UserTyping user={{ name: gameData?.typing?.name }} />
+          )}
         </main>
-        <div className="send-guess  w-full ">
+        <div className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  ">
           <input
             type="text"
             name="user_guess"
@@ -137,11 +82,11 @@ export default function GamePage() {
             value={userGuess || ""}
             onChange={(e) => setUserGuess(e.target.value)}
             placeholder="Your guess . . ."
-            className="px-4 outline-none py-3  w-4/5 shadow-md dark:bg-light-grey"
+            className="px-4 w-4/5 outline-none  py-3 shadow-md dark:bg-light-grey"
           />
 
           <button
-            className="btn w-1/5 border-0 dark:bg-btn-blue px-4 py-3 disabled:opacity-50  shadow-md"
+            className="btn w-1/5  border-0 dark:bg-btn-blue px-4 py-3 disabled:bg-ligh-black  shadow-md"
             onClick={handelGuessSubmit}
             disabled={!userGuess}
           >

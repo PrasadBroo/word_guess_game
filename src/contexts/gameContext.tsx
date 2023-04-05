@@ -2,6 +2,12 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../services/socket";
 import { UserContext } from "./userContext";
 
+interface UserType {
+  name: string | undefined;
+  room?: string;
+  id?: string;
+}
+
 type FounPlayerType = {
   name: string;
   room: string;
@@ -33,7 +39,7 @@ type GameDataType = {
 };
 interface GameContextType {
   onlinePlayersCount: number;
-  foundPlayer: boolean | FounPlayerType;
+  foundPlayer: null | FounPlayerType;
   gameData: null | GameDataType;
 }
 
@@ -43,14 +49,14 @@ interface Props {
 
 export const GameContext = createContext<GameContextType>({
   onlinePlayersCount: 0,
-  foundPlayer: false,
+  foundPlayer: null,
   gameData: null,
 });
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
-  const [foundPlayer, setFoundPlayer] = useState<boolean>(false);
+  const [foundPlayer, setFoundPlayer] = useState<null | FounPlayerType>(null);
   const [gameData, setGameData] = useState<GameDataType>({
     counter: 120,
     defination: "",
@@ -58,50 +64,47 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     userGuesses: [],
     typing: null,
   });
-  const [defination, setDefination] = useState<string | null>(null);
-  const [secretWordLength, setSecretWordLength] = useState<number>(0);
-  const [counter, setCounter] = useState<number>(120);
-  const [userGuesses, setUserGuesses] = useState<GuessType[]>([]);
-  const [typing, setTyping] = useState<{ name: string } | null>(null);
 
   const handleFoundPlayer = (data: {
     name: string;
     id: string;
     room: string;
   }) => {
-    setFoundPlayer(true);
-    setCurrentUser({
+    setFoundPlayer({ name: data.name, room: data.room, id: data.id });
+    setCurrentUser((prevState: UserType) => ({
+      ...prevState,
       room: data.room,
-      name: currentUser?.name,
-      id: currentUser?.id,
-    });
+    }));
     document.title = `You vs ${data.name}`;
   };
 
   const handelStartGame = (data: StartGameType) => {
-    setGameData({
-      ...gameData,
+    setGameData((prevState) => ({
+      ...prevState,
       defination: data.defination,
       secretWordLength: data.secret_word_length,
-    });
+    }));
   };
 
   const handelUserGuess = (data: UserGuessType) => {
-    setGameData({
-      ...gameData,
+    setGameData((prevState) => ({
+      ...prevState,
       typing: null,
-      userGuesses: [...gameData.userGuesses, data.user],
-    });
+      userGuesses: [...prevState.userGuesses, data.user],
+    }));
   };
 
   const handelDecrementCounter = (data: number) => {
-    setGameData({ ...gameData, counter: data });
+    setGameData((prevState) => ({ ...prevState, counter: data }));
   };
 
   const handelUserTyping = (data: UserGuessType) => {
-    setGameData({ ...gameData, typing: { name: data.user.name } });
+    setGameData((prevState) => ({
+      ...prevState,
+      typing: { name: data.user.name },
+    }));
     setTimeout(() => {
-      setGameData({ ...gameData, typing: null });
+      setGameData((prevState) => ({ ...prevState, typing: null }));
     }, 3000);
   };
 
