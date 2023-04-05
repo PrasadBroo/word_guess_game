@@ -2,14 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { socket } from "../services/socket";
-import useDocumentTitle from "../contexts/useDocumentTitle";
 import { UserContext } from "../contexts/userContext";
 
 export default function LoadingPage() {
   const navigate = useNavigate();
   const { setCurrentUser, currentUser } = useContext(UserContext);
   const [foundPlayer, setFoundPlayer] = useState<boolean>(false);
-  const [joining, setJoining] = useState<string | null>(null);
+
 
   const handleFoundPlayer = (data: {
     name: string;

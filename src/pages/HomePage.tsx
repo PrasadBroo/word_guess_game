@@ -2,24 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
+import { GameContext } from "../contexts/gameContext";
 
 export default function HomePage() {
   const [username, setUsername] = useState<string>("");
   const navigate = useNavigate();
   const { setCurrentUser } = useContext(UserContext);
-  const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
-
-  useEffect(() => {
-    if (!socket.connected) socket.connect();
-
-    socket.on("players_count", (data: number) => {
-      setOnlinePlayersCount(data);
-    });
-
-    () => {
-      socket.off("join_room");
-    };
-  }, []);
+  const { onlinePlayersCount } = useContext(GameContext);
 
   const handelFormSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
@@ -31,7 +20,7 @@ export default function HomePage() {
     navigate("/loading");
   };
   return (
-    <div className="user-detailsw transition dark:text-white dark:bg-secondary  font-Bungee  h-screen flex items-center justify-center">
+    <>
       <div className="online-users flex items-center dark:bg-primary dark:text-black justify-center fixed left-8 top-8 bg-secondary text-white py-2 px-4 rounded">
         <div className="circle h-3 w-3 animate-pulse bg-white  rounded-full dark:bg-green-400 mr-4"></div>
         <p>{onlinePlayersCount}</p>
@@ -60,6 +49,6 @@ export default function HomePage() {
           </button>
         </div>
       </form>
-    </div>
+    </>
   );
 }

@@ -7,11 +7,23 @@ import GamePage from "./pages/GamePage";
 import HomePage from "./pages/HomePage";
 import LoadingPage from "./pages/LoadingPage";
 import { socket } from "./services/socket";
+import HomepageLayout from "./layouts/HomepageLayout";
+import Landingpage from "./pages/Landingpage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <HomepageLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Landingpage />,
+      },
+      {
+        path: "/homepage",
+        element: <HomePage />,
+      },
+    ],
   },
   {
     path: "/loading",
