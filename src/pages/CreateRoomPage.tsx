@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { socket } from "../services/socket";
+import { UserContext } from "../contexts/userContext";
 
 export default function CreateRoom() {
+  const [roomId, setRoomId] = useState<string>("");
+  const {currentUser} = useContext(UserContext)
+  const handelGeneratedRoom = (roomid: string) => {
+    setRoomId(roomId);
+  };
+
+  useEffect(() => {
+    socket.emit("generate_room",currentUser);
+    socket.on("generated_room", handelGeneratedRoom);
+
+    return () => {
+      socket.off("generate_room");
+      socket.off("generated_room");
+    };
+  }, []);
   return (
     <div className="create-room ">
       <div className="details">
@@ -10,12 +27,12 @@ export default function CreateRoom() {
           name="room-id"
           id="room-id"
           disabled
-          value="room-SAFfdsfgsdds56"
+          value={roomId}
         />
         <button className="ml-2 py-2 px-4 bg-btn-blue rounded">Copy</button>
       </div>
       <div className="wating text-center mt-4">
-        Wating for user <span className="mx-2 animate-bounce ">.</span>{" "}
+        Wating for player <span className="mx-2 animate-bounce ">.</span>{" "}
         <span className="mr-2 animate-bounce  ">.</span>{" "}
         <span className=" animate-bounce  ">.</span>
       </div>

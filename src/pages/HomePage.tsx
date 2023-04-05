@@ -24,9 +24,7 @@ export default function HomePage() {
       id: socket.id,
     }));
 
-    socket.emit("join_room", { data: { username } });
-
-    navigate("/loading");
+    navigate("/landing");
   };
   return (
     <>
@@ -51,7 +49,7 @@ export default function HomePage() {
             className="bg-slate-400 transition py-2 dark:bg-btn-blue rounded px-4 text-white disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!username}
           >
-            Join
+            Submit
           </button>
         </div>
       </form>

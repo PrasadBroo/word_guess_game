@@ -10,6 +10,8 @@ import { socket } from "./services/socket";
 import HomepageLayout from "./layouts/HomepageLayout";
 import Landingpage from "./pages/Landingpage";
 import CreateRoom from "./pages/CreateRoomPage";
+import JoinRoom from "./pages/JoinRoom";
+import JoinRandomRoompage from "./pages/JoinRandomRoompage";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Landingpage />,
+        element: <HomePage />,
       },
       {
         path: "homepage",
@@ -31,6 +33,18 @@ const router = createBrowserRouter([
       {
         path: "loading",
         element: <LoadingPage />,
+      },
+      {
+        path: "joinroom",
+        element: <JoinRoom />,
+      },
+      {
+        path: "landing",
+        element: <Landingpage />,
+      },
+      {
+        path: "random",
+        element: <JoinRandomRoompage />,
       },
     ],
   },
