@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
-import { GameContext } from "../contexts/gameContext";
+
 
 interface User {
   name: string | undefined;

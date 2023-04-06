@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../services/socket";
 import { UserContext } from "./userContext";
+import { useNavigate } from "react-router-dom";
 
 interface UserType {
   name: string | undefined;
@@ -54,6 +55,7 @@ export const GameContext = createContext<GameContextType>({
 });
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
+  const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
   const [foundPlayer, setFoundPlayer] = useState<null | FounPlayerType>(null);
@@ -76,6 +78,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
       room: data.room,
     }));
     document.title = `You vs ${data.name}`;
+    navigate("/game");
   };
 
   const handelStartGame = (data: StartGameType) => {
