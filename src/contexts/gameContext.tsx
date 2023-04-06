@@ -42,16 +42,24 @@ interface GameContextType {
   onlinePlayersCount: number;
   foundPlayer: null | FounPlayerType;
   gameData: null | GameDataType;
+  gameEnded: null | GameEndedType;
 }
 
 interface Props {
   children: React.ReactNode;
 }
 
+type GameEndedType = {
+  stats: number;
+  isUserWon?: boolean;
+  word?: string;
+};
+
 export const GameContext = createContext<GameContextType>({
   onlinePlayersCount: 0,
   foundPlayer: null,
   gameData: null,
+  gameEnded: null,
 });
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
@@ -66,6 +74,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     userGuesses: [],
     typing: null,
   });
+  const [gameEnded, setGameEnded] = useState<null | GameEndedType>(null);
 
   const handleFoundPlayer = (data: {
     name: string;
@@ -112,7 +121,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handelEndGame = () => {
-    // navigate("/");
+    setGameEnded({ stats: 0 });
   };
 
   useEffect(() => {
@@ -158,6 +167,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
         foundPlayer,
         gameData,
         onlinePlayersCount,
+        gameEnded,
       }}
     >
       {children}

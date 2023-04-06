@@ -5,10 +5,12 @@ import { socket } from "../services/socket";
 import { useDebounce } from "use-debounce";
 import UserTyping from "../components/UserTyping";
 import { GameContext } from "../contexts/gameContext";
+import Modal from "../modal/Modal";
+import GameEndModal from "../modal/GameEndModal";
 
 export default function GamePage() {
   const { currentUser } = useContext(UserContext);
-  const { gameData, foundPlayer } = useContext(GameContext);
+  const { gameData, foundPlayer, gameEnded } = useContext(GameContext);
   const [userGuess, setUserGuess] = useState<string | null>(null);
   const [value] = useDebounce(userGuess, 500);
 
@@ -27,72 +29,77 @@ export default function GamePage() {
   };
 
   return (
-    <div className="game transition text-black font-Bungee mx-auto max-w-2xl dark:bg-secondary dark:text-primary">
-      <div className="wrap ">
-        <div className="header fixed left-0 right-0 mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
-          <div className="defination text-center italic">
-            <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
-              {gameData?.defination}
-            </p>
-          </div>
-          <div className="my-2">
-            <div className="details flex items-center justify-between">
-              <div className="current-user flex-1 text-center">
-                <div className=" capitalize">You</div>
-              </div>
-              <div className="counter-wrap flex-1 flex items-center justify-center">
-                <div className="counter bg-btn-blue text-white h-12 w-12 flex items-center justify-center   font-bold rounded-full">
-                  {gameData?.counter}
+    <>
+      <div className="game transition  text-black font-Bungee mx-auto max-w-2xl  dark:bg-secondary dark:text-primary">
+        <div className="wrap ">
+          <div className="header fixed left-0 right-0 mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
+            <div className="defination text-center italic">
+              <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
+                {gameData?.defination}
+              </p>
+            </div>
+            <div className="my-2">
+              <div className="details flex items-center justify-between">
+                <div className="current-user flex-1 text-center">
+                  <div className=" capitalize">You</div>
                 </div>
-              </div>
+                <div className="counter-wrap flex-1 flex items-center justify-center">
+                  <div className="counter bg-btn-blue text-white h-12 w-12 flex items-center justify-center   font-bold rounded-full">
+                    {gameData?.counter}
+                  </div>
+                </div>
 
-              <div className="opponent text-center flex-1 capitalize">
-                {foundPlayer?.name}
+                <div className="opponent text-center flex-1 capitalize">
+                  {foundPlayer?.name}
+                </div>
               </div>
             </div>
+            <div className="wrap-word flex items-end dark:bg-light-black  pb-2 h-14  justify-items-center justify-around">
+              {Array(gameData?.secretWordLength)
+                .fill("X")
+                .map((word, i) => (
+                  <div
+                    key={i}
+                    className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
+                  >
+                    <i className="fa-solid fa-question"></i>
+                  </div>
+                ))}
+            </div>
           </div>
-          <div className="wrap-word flex items-end dark:bg-light-black  pb-2 h-14  justify-items-center justify-around">
-            {Array(gameData?.secretWordLength)
-              .fill("X")
-              .map((word, i) => (
-                <div
-                  key={i}
-                  className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
-                >
-                  <i className="fa-solid fa-question"></i>
-                </div>
-              ))}
-          </div>
-        </div>
-        <main className="guesses pt-44 pb-12 min-h-[800px]  dark:bg-bg-secondary  scroll-smooth   overflow-y-auto ">
-          {gameData?.userGuesses.map((g, i) => (
-            <GuessMsg user={g} key={i} />
-          ))}
-          {gameData?.typing && (
-            <UserTyping user={{ name: gameData?.typing?.name }} />
-          )}
-        </main>
-        <div className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  ">
-          <input
-            type="text"
-            name="user_guess"
-            id="user_guess"
-            required
-            value={userGuess || ""}
-            onChange={(e) => setUserGuess(e.target.value)}
-            placeholder="Your guess . . ."
-            className="px-4 w-4/5 outline-none  py-3 shadow-md dark:bg-light-grey"
-          />
+          <main className="guesses pt-44 pb-12 min-h-[800px]  dark:bg-bg-secondary  scroll-smooth   overflow-y-auto ">
+            {gameData?.userGuesses.map((g, i) => (
+              <GuessMsg user={g} key={i} />
+            ))}
+            {gameData?.typing && (
+              <UserTyping user={{ name: gameData?.typing?.name }} />
+            )}
+          </main>
+          <div className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  ">
+            <input
+              type="text"
+              name="user_guess"
+              id="user_guess"
+              required
+              value={userGuess || ""}
+              onChange={(e) => setUserGuess(e.target.value)}
+              placeholder="Your guess . . ."
+              className="px-4 w-4/5 outline-none  py-3 shadow-md dark:bg-light-grey"
+            />
 
-          <button
-            className="btn w-1/5  border-0 dark:bg-btn-blue px-4 py-3 disabled:bg-ligh-black  shadow-md"
-            onClick={handelGuessSubmit}
-            disabled={!userGuess}
-          >
-            <i className="fa-regular fa-paper-plane text-xl text-black dark:text-white"></i>
-          </button>
+            <button
+              className="btn w-1/5  border-0 dark:bg-btn-blue px-4 py-3 disabled:bg-ligh-black  shadow-md"
+              onClick={handelGuessSubmit}
+              disabled={!userGuess}
+            >
+              <i className="fa-regular fa-paper-plane text-xl text-black dark:text-white"></i>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      <Modal visible={Boolean(gameEnded)}>
+        <GameEndModal />
+      </Modal>
+    </>
   );
 }
