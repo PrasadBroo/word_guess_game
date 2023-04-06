@@ -17,6 +17,8 @@ export default function GameEndModal() {
   const modal_classnames = classNames(
     "max-w-sm  w-4/5 dark:bg-white p-3 rounded m"
   );
+  console.log(gameEnded);
+  const handelplayAgain = () => {};
   return (
     <motion.div
       variants={variants}
@@ -25,18 +27,22 @@ export default function GameEndModal() {
       className={modal_classnames}
     >
       <div className="header text-center text-xl">
-        <h3>Word was:- {gameEnded?.word}</h3>
+        <h3>
+          Word was:- <span className=" underline">{gameEnded?.word}</span>
+        </h3>
       </div>
       <div className="results my-4 text-center text-xl">
-        {gameEnded?.isUserWon && (
+        {gameEnded?.isUserWon ? (
           <div className="user-won text-green-600">You won!</div>
-        )}
-        {!gameEnded?.isUserWon && (
-          <div className="user-won text-red-500">You lost!</div>
+        ) : (
+          <div className="user-lost text-red-500">You lost!</div>
         )}
       </div>
       <div className="btns text-center">
-        <button className="mr-4 py-2 px-4 rounded bg-btn-blue text-white my-2 mx-auto">
+        <button
+          className="mr-4 py-2 px-4 rounded bg-btn-blue text-white my-2 mx-auto"
+          onClick={handelplayAgain}
+        >
           <i className="fa-solid fa-arrow-rotate-right mr-4"></i>Play again
         </button>
         <button className=" py-2 px-4 rounded bg-btn-blue text-white my-2 mx-auto">
