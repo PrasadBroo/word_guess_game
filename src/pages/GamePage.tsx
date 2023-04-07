@@ -55,14 +55,17 @@ export default function GamePage() {
               </div>
             </div>
             <div className="wrap-word flex items-end dark:bg-light-black  pb-2 h-14  justify-items-center justify-around">
-              {Array(gameData?.secretWordLength)
-                .fill("X")
+              {gameData?.secretWord
                 .map((word, i) => (
                   <div
                     key={i}
                     className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
                   >
-                    <i className="fa-solid fa-question"></i>
+                    {word === "X" ? (
+                      <i className="fa-solid fa-question"></i>
+                    ) : (
+                      word
+                    )}
                   </div>
                 ))}
             </div>

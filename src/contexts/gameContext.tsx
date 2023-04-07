@@ -34,6 +34,7 @@ interface UserGuessType {
 type GameDataType = {
   defination: string;
   secretWordLength: number;
+  secretWord: string[];
   counter: number;
   userGuesses: GuessType[];
   typing: null | { name: string };
@@ -73,6 +74,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     secretWordLength: 0,
     userGuesses: [],
     typing: null,
+    secretWord: [],
   });
   const [gameEnded, setGameEnded] = useState<null | GameEndedType>(null);
 
@@ -95,6 +97,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
       ...prevState,
       defination: data.defination,
       secretWordLength: data.secret_word_length,
+      secretWord: Array(data.secret_word_length).fill("X"),
     }));
   };
 
@@ -129,6 +132,16 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     });
   };
 
+  const handelLetterReveal = (data: { letter: string; index: number }) => {
+    setGameData((prevState) => {
+      let arr = [...prevState.secretWord];
+      arr[data.index] = data.letter;
+
+      let result = { ...prevState, secretWord: arr };
+      return result;
+    });
+  };
+
   useEffect(() => {
     if (!socket.connected) socket.connect();
     () => {
@@ -156,6 +169,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     socket.on("decrement_counter", handelDecrementCounter);
     socket.on("end_game", handelEndGame);
     socket.on("user_typing", handelUserTyping);
+    socket.on("reveal_letter", handelLetterReveal);
 
     return () => {
       socket.off("start_game", handelStartGame);
