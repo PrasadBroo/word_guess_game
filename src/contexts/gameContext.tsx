@@ -51,7 +51,6 @@ interface Props {
 
 type GameEndedType = {
   stats: number;
-  isUserWon?: boolean;
   word?: string;
   winners?: string[];
 };
@@ -122,10 +121,10 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handelEndGame = (data: { word: string; winners: string[] }) => {
+    console.log(currentUser);
     setGameEnded({
       stats: 0,
       winners: data.winners,
-      isUserWon: data.winners.includes(currentUser?.name || ""),
       word: data.word,
     });
   };

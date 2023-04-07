@@ -1,7 +1,8 @@
 import classNames from "classnames";
 import { motion } from "framer-motion";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../contexts/gameContext";
+import { UserContext } from "../contexts/userContext";
 
 const variants = {
   hidden: { opacity: 0, scale: 0 },
@@ -14,10 +15,14 @@ const variants = {
 
 export default function GameEndModal() {
   const { gameEnded } = useContext(GameContext);
+  const { currentUser } = useContext(UserContext);
+
+  const isUserWon = gameEnded?.winners?.includes(currentUser?.id || "");
+
   const modal_classnames = classNames(
     "max-w-sm  w-4/5 dark:bg-white p-3 rounded m"
   );
-  console.log(gameEnded);
+
   const handelplayAgain = () => {};
   return (
     <motion.div
@@ -32,7 +37,7 @@ export default function GameEndModal() {
         </h3>
       </div>
       <div className="results my-4 text-center text-xl">
-        {gameEnded?.isUserWon ? (
+        {isUserWon ? (
           <div className="user-won text-green-600">You won!</div>
         ) : (
           <div className="user-lost text-red-500">You lost!</div>

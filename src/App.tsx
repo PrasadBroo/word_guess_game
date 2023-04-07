@@ -1,8 +1,5 @@
 import { useContext, useEffect } from "react";
-import {
-  Route,
-  Routes,
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { UserContext } from "./contexts/userContext";
 import useWindowUnloadEffect from "./customHooks/useWindowReload";
 import GamePage from "./pages/GamePage";
@@ -17,24 +14,17 @@ import JoinRoom from "./pages/JoinRoompage";
 import JoinRandomRoompage from "./pages/JoinRandomRoompage";
 import GamepageLayout from "./layouts/GamepageLayout";
 
-
 function App() {
   const { currentUser } = useContext(UserContext);
 
   const disconnectSocket = () => {
     socket.emit("disconnected", {
-      room: "room_1",
+      room: currentUser?.room,
       user: currentUser?.name || "not working",
-      test: "hi",
     });
   };
 
   useWindowUnloadEffect(disconnectSocket, [currentUser]);
-
-  useEffect(() => {
-    document.title = currentUser?.name || "No name";
-    console.log("socket id", socket.id);
-  }, [currentUser?.name]);
 
   return (
     <div className="App">
