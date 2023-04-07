@@ -19,6 +19,7 @@ export default function GamePage() {
   }, [value]);
 
   const handelGuessSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
     setUserGuess("");
     socket.emit("user_guess", {
       user: currentUser?.name,
@@ -55,19 +56,18 @@ export default function GamePage() {
               </div>
             </div>
             <div className="wrap-word flex items-end dark:bg-light-black  pb-2 h-14  justify-items-center justify-around">
-              {gameData?.secretWord
-                .map((word, i) => (
-                  <div
-                    key={i}
-                    className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
-                  >
-                    {word === "X" ? (
-                      <i className="fa-solid fa-question"></i>
-                    ) : (
-                      word
-                    )}
-                  </div>
-                ))}
+              {gameData?.secretWord.map((word, i) => (
+                <div
+                  key={i}
+                  className=" w-10 font-bold border-b-2 dark:text-white dark:border-white text-center text-xl "
+                >
+                  {word === "X" ? (
+                    <i className="fa-solid fa-question"></i>
+                  ) : (
+                    word
+                  )}
+                </div>
+              ))}
             </div>
           </div>
           <main className="guesses pt-44 pb-12 min-h-[800px]  dark:bg-bg-secondary  scroll-smooth   overflow-y-auto ">
@@ -78,7 +78,10 @@ export default function GamePage() {
               <UserTyping user={{ name: gameData?.typing?.name }} />
             )}
           </main>
-          <div className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  ">
+          <form
+            className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  "
+            onSubmit={handelGuessSubmit}
+          >
             <input
               type="text"
               name="user_guess"
@@ -92,12 +95,12 @@ export default function GamePage() {
 
             <button
               className="btn w-1/5  border-0 dark:bg-btn-blue px-4 py-3 disabled:bg-ligh-black  shadow-md"
-              onClick={handelGuessSubmit}
+              type="submit"
               disabled={!userGuess}
             >
               <i className="fa-regular fa-paper-plane text-xl text-black dark:text-white"></i>
             </button>
-          </div>
+          </form>
         </div>
       </div>
       <Modal visible={Boolean(gameEnded)}>
