@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { motion } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo } from "react";
 import { GameContext } from "../contexts/gameContext";
 import { UserContext } from "../contexts/userContext";
 
@@ -13,11 +13,21 @@ const variants = {
   },
 };
 
+const handelIsUserWon = (
+  winners: string[] | undefined,
+  id: string | undefined
+): boolean => {
+  return winners?.includes(id || "") || false;
+};
+
 export default function GameEndModal() {
   const { gameEnded } = useContext(GameContext);
   const { currentUser } = useContext(UserContext);
-
-  const isUserWon = gameEnded?.winners?.includes(currentUser?.id || "");
+  // not expensive operation but still :)
+  const isUserWon = useMemo(
+    () => handelIsUserWon(gameEnded?.winners, currentUser?.id),
+    [gameEnded?.winners, currentUser?.id]
+  );
 
   const modal_classnames = classNames(
     "max-w-sm  w-4/5 dark:bg-white p-3 rounded m"
