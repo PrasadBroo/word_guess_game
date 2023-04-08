@@ -19,6 +19,10 @@ export default function GamePage() {
   const { isOnline } = useOnlineStatus();
 
   useEffect(() => {
+    socket.emit("user_active_status", { user: currentUser, status: isOnline });
+  }, [isOnline]);
+
+  useEffect(() => {
     if (value) socket.emit("user_typing", currentUser);
   }, [value]);
 
@@ -32,6 +36,7 @@ export default function GamePage() {
       id: currentUser?.id,
     });
   };
+
 
   return (
     <>
@@ -53,7 +58,7 @@ export default function GamePage() {
                 </div>
                 <div className="opponent text-center flex-1 capitalize">
                   {foundPlayer?.name}
-                  <OnlineStatus isOnline={isOnline} />
+                  <OnlineStatus isOnline={foundPlayer?.isActive || false} />
                 </div>
               </div>
             </div>

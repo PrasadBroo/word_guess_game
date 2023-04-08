@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../services/socket";
 import { UserContext } from "./userContext";
 import { useNavigate } from "react-router-dom";
+import useOnlineStatus from "../customHooks/useOnlineStatus";
 
 interface UserType {
   name: string | undefined;
@@ -13,6 +14,7 @@ type FounPlayerType = {
   name: string;
   room: string;
   id: string;
+  isActive: boolean;
 };
 interface GuessType {
   name: string;
@@ -64,6 +66,7 @@ export const GameContext = createContext<GameContextType>({
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
+  const { isOnline } = useOnlineStatus();
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
   const [foundPlayer, setFoundPlayer] = useState<null | FounPlayerType>(null);
@@ -81,7 +84,12 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     id: string;
     room: string;
   }) => {
-    setFoundPlayer({ name: data.name, room: data.room, id: data.id });
+    setFoundPlayer({
+      name: data.name,
+      room: data.room,
+      id: data.id,
+      isActive: true,
+    });
     setCurrentUser((prevState: UserType) => ({
       ...prevState,
       room: data.room,
@@ -106,7 +114,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
       userGuesses: [...prevState.userGuesses, data.user],
     }));
   };
-
 
   const handelUserTyping = (data: UserGuessType) => {
     setGameData((prevState) => ({
@@ -133,6 +140,18 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
 
       let result = { ...prevState, secretWord: arr };
       return result;
+    });
+  };
+
+  const handelUserActiveStatus = (status: boolean) => {
+    setFoundPlayer((prevState) => {
+      let u = {
+        name: prevState?.name || "",
+        room: prevState?.room || "",
+        id: prevState?.id || "",
+        isActive: status,
+      };
+      return u;
     });
   };
 
@@ -163,12 +182,14 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     socket.on("end_game", handelEndGame);
     socket.on("user_typing", handelUserTyping);
     socket.on("reveal_letter", handelLetterReveal);
+    socket.on("user_active_status", handelUserActiveStatus);
 
     return () => {
       socket.off("start_game", handelStartGame);
       socket.off("user_guess", handelUserGuess);
       socket.off("end_game", handelEndGame);
       socket.off("user_typing", handelUserTyping);
+      socket.off("user_active_status", handelUserActiveStatus);
     };
   }, []);
 
