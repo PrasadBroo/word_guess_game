@@ -35,7 +35,6 @@ type GameDataType = {
   defination: string;
   secretWordLength: number;
   secretWord: string[];
-  counter: number;
   userGuesses: GuessType[];
   typing: null | { name: string };
 };
@@ -69,7 +68,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
   const [foundPlayer, setFoundPlayer] = useState<null | FounPlayerType>(null);
   const [gameData, setGameData] = useState<GameDataType>({
-    counter: 120,
     defination: "",
     secretWordLength: 0,
     userGuesses: [],
@@ -109,9 +107,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     }));
   };
 
-  const handelDecrementCounter = (data: number) => {
-    setGameData((prevState) => ({ ...prevState, counter: data }));
-  };
 
   const handelUserTyping = (data: UserGuessType) => {
     setGameData((prevState) => ({
@@ -124,7 +119,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handelEndGame = (data: { word: string; winners: string[] }) => {
-    console.log(currentUser);
     setGameEnded({
       stats: 0,
       winners: data.winners,
@@ -166,7 +160,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     socket.on("start_game", handelStartGame);
     socket.on("user_guess", handelUserGuess);
-    socket.on("decrement_counter", handelDecrementCounter);
     socket.on("end_game", handelEndGame);
     socket.on("user_typing", handelUserTyping);
     socket.on("reveal_letter", handelLetterReveal);
@@ -174,7 +167,6 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     return () => {
       socket.off("start_game", handelStartGame);
       socket.off("user_guess", handelUserGuess);
-      socket.off("decrement_counter", handelDecrementCounter);
       socket.off("end_game", handelEndGame);
       socket.off("user_typing", handelUserTyping);
     };

@@ -7,12 +7,16 @@ import UserTyping from "../components/UserTyping";
 import { GameContext } from "../contexts/gameContext";
 import Modal from "../modal/Modal";
 import GameEndModal from "../modal/GameEndModal";
+import OnlineStatus from "../components/OnlineStatus";
+import GameCounter from "../components/GameCounter";
+import useOnlineStatus from "../customHooks/useOnlineStatus";
 
 export default function GamePage() {
   const { currentUser } = useContext(UserContext);
   const { gameData, foundPlayer, gameEnded } = useContext(GameContext);
   const [userGuess, setUserGuess] = useState<string | null>(null);
   const [value] = useDebounce(userGuess, 500);
+  const { isOnline } = useOnlineStatus();
 
   useEffect(() => {
     if (value) socket.emit("user_typing", currentUser);
@@ -45,13 +49,11 @@ export default function GamePage() {
                   <div className=" capitalize">You</div>
                 </div>
                 <div className="counter-wrap flex-1 flex items-center justify-center">
-                  <div className="counter bg-btn-blue text-white h-12 w-12 flex items-center justify-center   font-bold rounded-full">
-                    {gameData?.counter}
-                  </div>
+                  <GameCounter />
                 </div>
-
                 <div className="opponent text-center flex-1 capitalize">
                   {foundPlayer?.name}
+                  <OnlineStatus isOnline={isOnline} />
                 </div>
               </div>
             </div>
