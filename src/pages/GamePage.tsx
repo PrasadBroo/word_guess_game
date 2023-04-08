@@ -10,6 +10,9 @@ import GameEndModal from "../modal/GameEndModal";
 import OnlineStatus from "../components/OnlineStatus";
 import GameCounter from "../components/GameCounter";
 import useOnlineStatus from "../customHooks/useOnlineStatus";
+import PlayerLeftModal from "../modal/PlayerLeftModal";
+
+type PlayerLeftType = { user: { name: string; room: string; id: string } };
 
 export default function GamePage() {
   const { currentUser } = useContext(UserContext);
@@ -17,6 +20,18 @@ export default function GamePage() {
   const [userGuess, setUserGuess] = useState<string | null>(null);
   const [value] = useDebounce(userGuess, 500);
   const { isOnline } = useOnlineStatus();
+  const [playerLeft, setPlayerLeft] = useState<null | PlayerLeftType>(null);
+
+  const handelPlyerLeft = (player: PlayerLeftType) => {
+    setPlayerLeft(player);
+  };
+
+  useEffect(() => {
+    socket.on("player_left", handelPlyerLeft);
+    return () => {
+      socket.off("player_left", handelPlyerLeft);
+    };
+  }, []);
 
   useEffect(() => {
     socket.emit("user_active_status", { user: currentUser, status: isOnline });
@@ -36,7 +51,6 @@ export default function GamePage() {
       id: currentUser?.id,
     });
   };
-
 
   return (
     <>
@@ -112,6 +126,9 @@ export default function GamePage() {
       </div>
       <Modal visible={Boolean(gameEnded)}>
         <GameEndModal />
+      </Modal>
+      <Modal visible={Boolean(playerLeft?.user.name)}>
+        <PlayerLeftModal player={playerLeft} />
       </Modal>
     </>
   );

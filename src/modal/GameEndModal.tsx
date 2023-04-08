@@ -30,7 +30,7 @@ export default function GameEndModal() {
   );
 
   const modal_classnames = classNames(
-    "max-w-sm  w-4/5 dark:bg-white p-3 rounded m"
+    "max-w-sm  w-4/5 dark:bg-white p-3 rounded"
   );
 
   const handelplayAgain = () => {};
