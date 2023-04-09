@@ -124,6 +124,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
       typing: null,
       userGuesses: [...prevState.userGuesses, data.user],
     }));
+    window.scrollTo(0, document.body.scrollHeight);
   };
 
   const handelUserTyping = (data: UserGuessType) => {

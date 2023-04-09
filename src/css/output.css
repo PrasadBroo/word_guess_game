@@ -743,6 +743,10 @@ video {
   justify-items: center;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
 }

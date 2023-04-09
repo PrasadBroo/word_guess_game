@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
+import useHideBodyOverflow from "../customHooks/useHideBodyOverflow";
 
 const varinats = {
   hidden: { opacity: 0 },
@@ -19,6 +20,13 @@ const Modal: React.FC<Props> = (props) => {
     "modal font-Bungee fixed top-0 left-0 right-0 bottom-0 dark:bg-btn-blue dark:bg-opacity-30 max-w-2xl mx-auto z-50 flex items-center justify-center",
     props.className
   );
+
+  const {setHide} = useHideBodyOverflow()
+
+  useEffect(()=>{
+   if(props.visible) setHide(true)
+  },[props.visible])
+
   return (
     <AnimatePresence>
       {props.visible && (
