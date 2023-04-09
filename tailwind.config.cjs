@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        Bungee: "Bungee,cursive",
+        Bungee: ["Bungee,cursive"],
       },
       colors: {
         primary: "#fff",
