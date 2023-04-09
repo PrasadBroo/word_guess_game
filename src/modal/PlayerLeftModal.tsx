@@ -14,7 +14,7 @@ export default function PlayerLeftModal(props: Props) {
 
   return (
     <div className={modal_classnames}>
-      <div className="heading text-center">
+      <div className="heading text-center text-2xl">
         <span className="capitalize underline">{props.player?.user.name}</span> has left the game :(
       </div>
       <div className="options flex items-center">

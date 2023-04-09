@@ -37,7 +37,6 @@ function App() {
           <Route path="joinroom" element={<JoinRoom />} />
           <Route path="landing" element={<Landingpage />} />
           <Route path="random" element={<JoinRandomRoompage />} />
-          <Route path="landing" element={<Landingpage />} />
         </Route>
         <Route path="/game" element={<GamepageLayout />}>
           <Route index element={<GamePage />} />

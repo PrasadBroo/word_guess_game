@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useContext, useMemo } from "react";
 import { GameContext } from "../contexts/gameContext";
 import { UserContext } from "../contexts/userContext";
+import { useNavigate } from "react-router-dom";
 
 const variants = {
   hidden: { opacity: 0, scale: 0 },
@@ -23,6 +24,7 @@ const handelIsUserWon = (
 export default function GameEndModal() {
   const { gameEnded } = useContext(GameContext);
   const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
   // not expensive operation but still :)
   const isUserWon = useMemo(
     () => handelIsUserWon(gameEnded?.winners, currentUser?.id),
@@ -33,7 +35,9 @@ export default function GameEndModal() {
     "max-w-sm  w-4/5 dark:bg-white p-3 rounded"
   );
 
-  const handelplayAgain = () => {};
+  const handelplayAgain = () => {
+    navigate("/landing", { replace: true });
+  };
   return (
     <motion.div
       variants={variants}
@@ -60,7 +64,7 @@ export default function GameEndModal() {
         >
           <i className="fa-solid fa-arrow-rotate-right mr-4"></i>Play again
         </button>
-        <button className=" py-2 px-4 rounded bg-btn-blue text-white my-2 mx-auto">
+        <button className=" py-2 px-4 rounded bg-btn-blue text-white my-2 mx-auto" onClick={handelplayAgain}>
           <i className="fa-solid fa-bars mr-4"></i>Menu
         </button>
       </div>

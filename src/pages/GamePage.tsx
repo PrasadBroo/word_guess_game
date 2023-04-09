@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import GuessMsg from "../components/GuessMsg";
 import { UserContext } from "../contexts/userContext";
 import { socket } from "../services/socket";
@@ -11,8 +11,8 @@ import OnlineStatus from "../components/OnlineStatus";
 import GameCounter from "../components/GameCounter";
 import useOnlineStatus from "../customHooks/useOnlineStatus";
 import PlayerLeftModal from "../modal/PlayerLeftModal";
-import { motion } from "framer-motion";
 import Word from "../components/Word";
+import useScrollToBottom from "../customHooks/useScrollToBottom";
 
 type PlayerLeftType = { user: { name: string; room: string; id: string } };
 
@@ -24,16 +24,18 @@ export default function GamePage() {
   const [value] = useDebounce(userGuess, 500);
   const { isOnline } = useOnlineStatus();
   const [playerLeft, setPlayerLeft] = useState<null | PlayerLeftType>(null);
+  const messagesRef = useRef(null);
+  useScrollToBottom(messagesRef)
 
   const handelPlyerLeft = (player: PlayerLeftType) => {
     setPlayerLeft(player);
-    clearGameData();
   };
 
   useEffect(() => {
     socket.on("player_left", handelPlyerLeft);
     return () => {
       socket.off("player_left", handelPlyerLeft);
+      clearGameData()
     };
   }, []);
 
@@ -60,7 +62,7 @@ export default function GamePage() {
     <>
       <div className="game transition  text-black font-Bungee mx-auto max-w-2xl  dark:bg-secondary dark:text-primary">
         <div className="wrap ">
-          <div className="header fixed left-0 right-0 mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
+          <div className="header fixed left-0 top-0 right-0 h-[20vh] mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
             <div className="defination text-center italic">
               <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
                 {gameData?.defination}
@@ -95,7 +97,7 @@ export default function GamePage() {
               ))}
             </div>
           </div>
-          <main className="guesses pt-44 pb-12 min-h-[800px]  dark:bg-bg-secondary  scroll-smooth   overflow-y-auto ">
+          <main className="guesses  h-[80vh] mt-[20vh] pb-20  dark:bg-bg-secondary  scroll-smooth  overflow-y-auto " ref={messagesRef}>
             {gameData?.userGuesses.map((g, i) => (
               <GuessMsg user={g} key={i} />
             ))}
