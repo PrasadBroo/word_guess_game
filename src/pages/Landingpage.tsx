@@ -1,6 +1,14 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { socket } from "../services/socket";
 
 export default function Landingpage() {
+  
+  useEffect(() => {
+    socket.disconnected && socket.connect();
+    console.log(socket.connected);
+  }, []);
+
   return (
     <div className="landing-page">
       <Link

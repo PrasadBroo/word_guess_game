@@ -45,6 +45,7 @@ interface GameContextType {
   foundPlayer: null | FounPlayerType;
   gameData: null | GameDataType;
   gameEnded: null | GameEndedType;
+  clearGameData:()=>void;
 }
 
 interface Props {
@@ -62,11 +63,11 @@ export const GameContext = createContext<GameContextType>({
   foundPlayer: null,
   gameData: null,
   gameEnded: null,
+  clearGameData:()=>{}
 });
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
-  const { isOnline } = useOnlineStatus();
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const [onlinePlayersCount, setOnlinePlayersCount] = useState(0);
   const [foundPlayer, setFoundPlayer] = useState<null | FounPlayerType>(null);
@@ -96,6 +97,16 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
     }));
     document.title = `You vs ${data.name}`;
     navigate("/game");
+  };
+
+  const clearGameData = () => {
+    setGameData({
+      defination: "",
+      secretWord: [],
+      secretWordLength: 0,
+      typing: null,
+      userGuesses: [],
+    });
   };
 
   const handelStartGame = (data: StartGameType) => {
@@ -131,6 +142,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
       winners: data.winners,
       word: data.word,
     });
+    clearGameData()
   };
 
   const handelLetterReveal = (data: { letter: string; index: number }) => {
@@ -200,6 +212,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
         gameData,
         onlinePlayersCount,
         gameEnded,
+        clearGameData
       }}
     >
       {children}

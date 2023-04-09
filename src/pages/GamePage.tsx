@@ -11,12 +11,15 @@ import OnlineStatus from "../components/OnlineStatus";
 import GameCounter from "../components/GameCounter";
 import useOnlineStatus from "../customHooks/useOnlineStatus";
 import PlayerLeftModal from "../modal/PlayerLeftModal";
+import { motion } from "framer-motion";
+import Word from "../components/Word";
 
 type PlayerLeftType = { user: { name: string; room: string; id: string } };
 
 export default function GamePage() {
   const { currentUser } = useContext(UserContext);
-  const { gameData, foundPlayer, gameEnded } = useContext(GameContext);
+  const { gameData, foundPlayer, gameEnded, clearGameData } =
+    useContext(GameContext);
   const [userGuess, setUserGuess] = useState<string | null>(null);
   const [value] = useDebounce(userGuess, 500);
   const { isOnline } = useOnlineStatus();
@@ -24,6 +27,7 @@ export default function GamePage() {
 
   const handelPlyerLeft = (player: PlayerLeftType) => {
     setPlayerLeft(player);
+    clearGameData();
   };
 
   useEffect(() => {
@@ -85,7 +89,7 @@ export default function GamePage() {
                   {word === "X" ? (
                     <i className="fa-solid fa-question"></i>
                   ) : (
-                    word
+                    <Word word={word} />
                   )}
                 </div>
               ))}
