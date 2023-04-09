@@ -13,6 +13,7 @@ import CreateRoom from "./pages/CreateRoomPage";
 import JoinRoom from "./pages/JoinRoompage";
 import JoinRandomRoompage from "./pages/JoinRandomRoompage";
 import GamepageLayout from "./layouts/GamepageLayout";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { currentUser } = useContext(UserContext);
@@ -42,6 +43,7 @@ function App() {
           <Route index element={<GamePage />} />
         </Route>
       </Routes>
+      <Toaster/>
     </div>
   );
 }

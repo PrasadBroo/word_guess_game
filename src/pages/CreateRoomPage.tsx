@@ -5,9 +5,14 @@ import { UserContext } from "../contexts/userContext";
 export default function CreateRoom() {
   const [roomId, setRoomId] = useState<string>("");
   const { currentUser } = useContext(UserContext);
+  const [copied,setCopied] = useState(false)
   const handelGeneratedRoom = (roomid: string) => {
     setRoomId(roomid);
   };
+const handelRoomIdCopy = async()=>{
+ await navigator.clipboard.writeText(roomId)
+ setCopied(true)
+}
 
   useEffect(() => {
     socket.emit("generate_room", currentUser);
@@ -20,7 +25,7 @@ export default function CreateRoom() {
   }, []);
   
   return (
-    <div className="create-room ">
+    <div className="create-room font-Bungee ">
       <div className="details">
         <input
           type="text"
@@ -30,8 +35,8 @@ export default function CreateRoom() {
           disabled
           value={roomId}
         />
-        <button className=" py-2 px-4 bg-btn-blue rounded block mt-4 mx-auto">
-          Copy
+        <button className=" py-2 px-4 bg-btn-blue rounded block mt-4 mx-auto" onClick={handelRoomIdCopy}>
+          {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
       <div className="wating text-center mt-4">
