@@ -25,7 +25,7 @@ const GuessMsg: React.FC<Props> = ({ user }) => {
     "flex-row-reverse ": currentUser?.id === user.id,
   });
   const user_msg_classes = classNames(
-    "user-guess mx-2  py-2  px-3  rounded-xl",
+    "user-guess mx-2  py-2  px-3  rounded-xl md:text-xl",
     {
       "bg-green-400 text-white": user.correct,
       "dark:bg-primary dark:text-secondary": !user.correct,
@@ -38,7 +38,7 @@ const GuessMsg: React.FC<Props> = ({ user }) => {
       variants={variants}
       className={msg_class}
     >
-      <span className="username h-10 w-10  flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
+      <span className="username  h-10 w-10  flex font-bold items-center  justify-center bg-btn-blue rounded-full p-2 text-white ">
         {user.name[0].toLocaleUpperCase()}
       </span>
       <p className={user_msg_classes}>{user.guess}</p>
