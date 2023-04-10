@@ -25,7 +25,7 @@ export default function GamePage() {
   const { isOnline } = useOnlineStatus();
   const [playerLeft, setPlayerLeft] = useState<null | PlayerLeftType>(null);
   const messagesRef = useRef(null);
-  useScrollToBottom(messagesRef)
+  useScrollToBottom(messagesRef);
 
   const handelPlyerLeft = (player: PlayerLeftType) => {
     setPlayerLeft(player);
@@ -35,7 +35,7 @@ export default function GamePage() {
     socket.on("player_left", handelPlyerLeft);
     return () => {
       socket.off("player_left", handelPlyerLeft);
-      clearGameData()
+      clearGameData();
     };
   }, []);
 
@@ -60,9 +60,9 @@ export default function GamePage() {
 
   return (
     <>
-      <div className="game transition  text-black font-Bungee mx-auto max-w-2xl  dark:bg-secondary dark:text-primary">
+      <div className="game transition  text-black font-Bungee    dark:bg-secondary dark:text-primary">
         <div className="wrap ">
-          <div className="header fixed left-0 top-0 right-0 h-[20vh] mx-auto dark:bg-light-grey  max-w-2xl z-20 shadow-md  ">
+          <div className="header fixed top-0  h-[20vh] max-w-2xl w-full  dark:bg-light-grey   z-20 shadow-md  ">
             <div className="defination text-center italic">
               <p className=" dark:bg-primary tracking-wide  rounded-md  dark:text-black">
                 {gameData?.defination}
@@ -97,7 +97,10 @@ export default function GamePage() {
               ))}
             </div>
           </div>
-          <main className="guesses  h-[80vh] mt-[20vh] pb-20  dark:bg-bg-secondary  scroll-smooth  overflow-y-auto " ref={messagesRef}>
+          <main
+            className="guesses  h-[80vh] mt-[20vh] pb-20 pt-4  dark:bg-bg-secondary  scroll-smooth  overflow-y-auto "
+            ref={messagesRef}
+          >
             {gameData?.userGuesses.map((g, i) => (
               <GuessMsg user={g} key={i} />
             ))}
@@ -106,7 +109,7 @@ export default function GamePage() {
             )}
           </main>
           <form
-            className="send-guess w-full flex fixed z-10 bottom-0 max-w-2xl  "
+            className="send-guess w-full max-w-2xl flex fixed z-10 bottom-0   "
             onSubmit={handelGuessSubmit}
           >
             <input
@@ -117,7 +120,7 @@ export default function GamePage() {
               value={userGuess || ""}
               onChange={(e) => setUserGuess(e.target.value)}
               placeholder="Your guess . . ."
-              className="px-4 w-4/5 outline-none  py-3 shadow-md dark:bg-light-grey"
+              className="px-4 w-4/5 outline-none max-w-2xl  py-3 shadow-md dark:bg-light-grey"
             />
 
             <button
