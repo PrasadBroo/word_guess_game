@@ -28,7 +28,7 @@ function App() {
   useWindowUnloadEffect(disconnectSocket, [currentUser]);
 
   return (
-    <div className="App">
+    <div className="App  dark:bg-secondary ">
       <Routes>
         <Route path="/" element={<HomepageLayout />}>
           <Route index element={<HomePage />} />
@@ -43,7 +43,7 @@ function App() {
           <Route index element={<GamePage />} />
         </Route>
       </Routes>
-      <Toaster/>
+      <Toaster />
     </div>
   );
 }

@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../services/socket";
 import { UserContext } from "./userContext";
 import { useNavigate } from "react-router-dom";
-import useOnlineStatus from "../customHooks/useOnlineStatus";
 
 interface UserType {
   name: string | undefined;
@@ -45,7 +44,7 @@ interface GameContextType {
   foundPlayer: null | FounPlayerType;
   gameData: null | GameDataType;
   gameEnded: null | GameEndedType;
-  clearGameData:()=>void;
+  clearGameData: () => void;
 }
 
 interface Props {
@@ -63,7 +62,7 @@ export const GameContext = createContext<GameContextType>({
   foundPlayer: null,
   gameData: null,
   gameEnded: null,
-  clearGameData:()=>{}
+  clearGameData: () => {},
 });
 
 export const GameDataProvider: React.FC<Props> = ({ children }) => {
@@ -110,6 +109,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handelStartGame = (data: StartGameType) => {
+    setGameEnded(null);
     setGameData((prevState) => ({
       ...prevState,
       defination: data.defination,
@@ -211,7 +211,7 @@ export const GameDataProvider: React.FC<Props> = ({ children }) => {
         gameData,
         onlinePlayersCount,
         gameEnded,
-        clearGameData
+        clearGameData,
       }}
     >
       {children}
