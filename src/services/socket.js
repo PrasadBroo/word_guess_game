@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 // "undefined" means the URL will be computed from the `window.location` object
 const URL =
   process.env.NODE_ENV === "production"
-    ? "https://word-guess-m95h.onrender.com"
+    ? "https://word-guess-2ota.onrender.com"
     : "http://localhost:4000";
 
 export const socket = io(URL, { autoConnect: false });
